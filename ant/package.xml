@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="euc-kr" ?>
+<project name="package" default="all" basedir=".">
+	<property file="banana.properties" />
+
+	<target name="all" depends="cleanPackage, package.server, build.timestamp">
+		<echo message="${name.en} Package create complete" />    
+		<echo message="" />
+	</target>
+
+	<target name="cleanPackage">
+		<echo message="clean target Dir : ${target.dir}" />    
+		<delete dir="${target.dir}" />
+	</target>
+
+
+
+	<target name="build.timestamp">
+		
+		<tstamp>
+			<format property="build.timestamp" pattern="yyyy-MM-dd hh:mm:ss"/>
+		</tstamp>
+		
+		<echo message="release_date=${build.timestamp}" file="${target.dir}/bin/releasedate.properties"/>
+		
+	</target>
+
+	<target name="package.server.all">
+			<echo message="starting package" />
+			<!--mkdir dir="${target.dir}/log" /-->
+
+			 <copy todir="${target.dir}/lib" overwrite="true">
+				<fileset dir="${build.dir}/bananaJ" casesensitive="yes" >
+					<include name="bananaJ-${version}.jar"/>
+				</fileset>
+			</copy>
+			
+			<copy todir="${target.dir}/lib" overwrite="true">
+				<fileset dir="${banana.lib}" casesensitive="yes" >
+					<include name="**/*.jar"/>
+				</fileset>
+			</copy>
+
+			<copy todir="${target.dir}/conf" overwrite="true">
+				<fileset dir="${config.dir}/conf" casesensitive="yes" >
+					<include name="**/**"/>
+					<exclude name="test*/**"/>
+				</fileset>
+			</copy>
+
+			<zip destfile="${target.dir}/lib/banana.jar">
+				<zipgroupfileset dir="${target.dir}/lib" includes="*.jar">
+			</zipgroupfileset></zip>
+		
+	</target>
+	<target name="package.server">
+		<echo message="starting package" />
+
+		<mkdir dir="${target.dir}"/>
+		<antcall target="package.server.all"/>
+	</target>
+</project>

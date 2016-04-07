@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="euc-kr" ?>
+<project name="common" default="all" basedir=".">
+	<property file="banana.properties" />
+	
+	<path id="banana-compile.classpath">
+		<fileset dir="${banana.lib}">
+		    <include name="**/*.jar" />
+	    </fileset>
+	</path>
+	<target name="clean">
+	  <delete dir="${build.dir}" />
+	</target>
+
+	<target name="all" depends="clean ,compile ">
+	    <echo message="----- ${name.en} Compile complete----" />        
+        <echo message="" />
+	</target>
+
+	<target name="compile">	
+		<mkdir dir="${build.dir}" />   
+		<mkdir dir="${build.dir}/bananaJ" />   
+
+		<javac destdir="${build.dir}/bananaJ" encoding="utf-8" debug="on" debuglevel="lines,vars,source" nowarn="true" includeantruntime="false">
+			<src path="${banana.src.dir}" />
+			<classpath refid="banana-compile.classpath" />
+		</javac>	
+		
+		<copy todir="${build.dir}/bananaJ" overwrite="true">
+			<fileset dir="${banana.src.dir}" casesensitive="yes" >
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		
+		<jar destfile="${build.dir}/bananaJ/bananaJ-${version}.jar">
+		    <fileset dir="${build.dir}/bananaJ" casesensitive="yes" >
+				<include name="**/*.class" />
+			</fileset>
+		</jar>
+	 </target>
+	
+ </project>
